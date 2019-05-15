@@ -15,6 +15,7 @@ find_package(PCL 1.8 HINTS "${PCL_DIR}/share/pcl-1.8" REQUIRED)
 # Find OpenCV at the default location
 find_package(OpenCV HINTS "${OPENCV_DIR}" REQUIRED)
 
+find_package(Boost REQUIRED)
 # Only link with required opencv modules.
 set(OpenCV_LIBS opencv_core opencv_imgproc opencv_highgui)
 
@@ -23,7 +24,7 @@ set(OpenCV_LIBS opencv_core opencv_imgproc opencv_highgui)
 include_directories(${PCL_ROOT}/include/pcl-${PCL_VERSION_MAJOR}.${PCL_VERSION_MINOR})
 include_directories(${EIGEN_ROOT})
 include_directories(${OpenCV_INCLUDE_DIRS})
-
+include_directories(${BOOST_INCLUDE_DIRS})
 #library_directories(${OpenCV_LIBRARY_DIRS})
 
 # Add source directory
@@ -31,4 +32,4 @@ aux_source_directory("./src" SRC_LIST)
 
 # Add exectuteable
 add_executable(${PROJECT_NAME} ${SRC_LIST})
-target_link_libraries(odm_orthophoto ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${PCL_SURFACE_LIBRARIES} ${OpenCV_LIBS})
+target_link_libraries(odm_orthophoto ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${PCL_SURFACE_LIBRARIES} ${OpenCV_LIBS} ${BOOST_LIBRARIES})
