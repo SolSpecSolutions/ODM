@@ -6,17 +6,17 @@ from opendm import io
 from opendm import system
 from opendm import log
 
-from dataset import ODMLoadDatasetStage
-from run_opensfm import ODMOpenSfMStage
-from mve import ODMMveStage
-from odm_slam import ODMSlamStage
-from odm_meshing import ODMeshingStage
-from mvstex import ODMMvsTexStage
-from odm_georeferencing import ODMGeoreferencingStage
-from odm_orthophoto import ODMOrthoPhotoStage
-from odm_dem import ODMDEMStage
-from odm_filterpoints import ODMFilterPoints
-from splitmerge import ODMSplitStage, ODMMergeStage
+from .dataset import ODMLoadDatasetStage
+from .run_opensfm import ODMOpenSfMStage
+from .mve import ODMMveStage
+from .odm_slam import ODMSlamStage
+from .odm_meshing import ODMeshingStage
+from .mvstex import ODMMvsTexStage
+from .odm_georeferencing import ODMGeoreferencingStage
+from .odm_orthophoto import ODMOrthoPhotoStage
+from .odm_dem import ODMDEMStage
+from .odm_filterpoints import ODMFilterPoints
+from .splitmerge import ODMSplitStage, ODMMergeStage
 
 
 class ODMApp:
@@ -24,8 +24,8 @@ class ODMApp:
         """
         Initializes the application and defines the ODM application pipeline stages
         """
-        
-        dataset = ODMLoadDatasetStage('dataset', args, 
+
+        dataset = ODMLoadDatasetStage('dataset', args,
                                           verbose=args.verbose,
                                           proj=args.proj)
         split = ODMSplitStage('split', args)
@@ -72,14 +72,14 @@ class ODMApp:
             else:
                 opensfm.connect(mve) \
                        .connect(filterpoints)
-            
+
             filterpoints \
                 .connect(meshing) \
                 .connect(texturing) \
                 .connect(georeferencing) \
                 .connect(dem) \
                 .connect(orthophoto)
-                
+
         else:
             # SLAM pipeline
             # TODO: this is broken and needs work
