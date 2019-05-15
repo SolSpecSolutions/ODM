@@ -7,10 +7,10 @@ from opensfm.exif import sensor_string
 from opendm import get_image_size
 from pyproj import Proj
 
-import log
-import io
-import system
-import context
+from opendm import log
+from opendm import io
+from opendm import system
+from opendm import context
 import logging
 
 class ODM_Photo:
@@ -86,7 +86,7 @@ class ODM_Photo:
         )
 
     def float_values(self, tag):
-        return map(lambda v: float(v.num) / float(v.den), tag.values) 
+        return map(lambda v: float(v.num) / float(v.den), tag.values)
 
     def int_values(self, tag):
         return map(int, tag.values)
@@ -129,8 +129,8 @@ class ODM_Reconstruction(object):
                     utm_zone = int(ref[2][:len(ref[2]) - 1])
 
                     proj_args = {
-                        'proj': "utm", 
-                        'zone': utm_zone, 
+                        'proj': "utm",
+                        'zone': utm_zone,
                         'datum': datum,
                         'no_defs': True
                     }
@@ -314,7 +314,7 @@ class ODM_Tree(object):
         self.odm_orthophoto_log = io.join_paths(self.odm_orthophoto, 'odm_orthophoto_log.txt')
         self.odm_orthophoto_tif_log = io.join_paths(self.odm_orthophoto, 'gdal_translate_log.txt')
 
-        # Split-merge 
+        # Split-merge
         self.submodels_path = io.join_paths(self.root_path, 'submodels')
         self.out_tif = io.join_paths(self.root_path, "merged.tif")
         self.addo_log = io.join_paths(self.root_path, "gdal_addo.log")
@@ -344,7 +344,7 @@ class ODM_Stage:
         return (self.args.rerun is not None and self.args.rerun == self.name) or \
                      (self.args.rerun_all) or \
                      (self.args.rerun_from is not None and self.name in self.args.rerun_from)
-    
+
     def run(self, outputs = {}):
         start_time = system.now_raw()
         log.ODM_INFO('Running %s stage' % self.name)
