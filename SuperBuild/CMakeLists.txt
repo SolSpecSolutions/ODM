@@ -62,55 +62,56 @@ message(STATUS "SuperBuild binary files will be located to: ${SB_BINARY_DIR}")
 # ---------------------------------------------------------------------------------------------
 # Open Source Computer Vision (OpenCV)
 #
-set(ODM_OpenCV_Version 2.4.11)
-option(ODM_BUILD_OpenCV "Force to build OpenCV library" OFF)
-
-SETUP_EXTERNAL_PROJECT(OpenCV ${ODM_OpenCV_Version} ${ODM_BUILD_OpenCV})
+#set(ODM_OpenCV_Version 2.4.11)
+#option(ODM_BUILD_OpenCV "Force to build OpenCV library" OFF)
+#
+#SETUP_EXTERNAL_PROJECT(OpenCV ${ODM_OpenCV_Version} ${ODM_BUILD_OpenCV})
 
 
 # ---------------------------------------------------------------------------------------------
 # Point Cloud Library (PCL)
 #
-set(ODM_PCL_Version 1.8.0)
-option(ODM_BUILD_PCL "Force to build PCL library" OFF)
+#set(ODM_PCL_Version 1.8.0)
+#option(ODM_BUILD_PCL "Force to build PCL library" OFF)
 
-SETUP_EXTERNAL_PROJECT(PCL ${ODM_PCL_Version} ${ODM_BUILD_PCL})
+#SETUP_EXTERNAL_PROJECT(PCL ${ODM_PCL_Version} ${ODM_BUILD_PCL})
 
 
 # ---------------------------------------------------------------------------------------------
 # Google Flags library (GFlags)
 #
-set(ODM_GFlags_Version 2.1.2)
-option(ODM_BUILD_GFlags "Force to build GFlags library" OFF)
+#set(ODM_GFlags_Version 2.1.2)
+#option(ODM_BUILD_GFlags "Force to build GFlags library" OFF)
 
-SETUP_EXTERNAL_PROJECT(GFlags ${ODM_GFlags_Version} ${ODM_BUILD_GFlags})
+#SETUP_EXTERNAL_PROJECT(GFlags ${ODM_GFlags_Version} ${ODM_BUILD_GFlags})
 
 
 # ---------------------------------------------------------------------------------------------
 # Ceres Solver
 #
-set(ODM_Ceres_Version 1.10.0)
-option(ODM_BUILD_Ceres "Force to build Ceres library" OFF)
+#set(ODM_Ceres_Version 1.10.0)
+#option(ODM_BUILD_Ceres "Force to build Ceres library" OFF)
 
-SETUP_EXTERNAL_PROJECT(Ceres ${ODM_Ceres_Version} ${ODM_BUILD_Ceres})
+#SETUP_EXTERNAL_PROJECT(Ceres ${ODM_Ceres_Version} ${ODM_BUILD_Ceres})
 
 
 # ---------------------------------------------------------------------------------------------
 # Hexer
 #
-SETUP_EXTERNAL_PROJECT(Hexer 1.4 ON)
+#SETUP_EXTERNAL_PROJECT(Hexer 1.4 ON)
 
 # ---------------------------------------------------------------------------------------------
 # Open Geometric Vision (OpenGV)
 # Open Structure from Motion (OpenSfM)
 #
 
-set(custom_libs OpenGV
-				OpenSfM
-				LASzip
-				PDAL
-				MvsTexturing
-)
+set(custom_libs MvsTexturing)
+#set(custom_libs OpenGV
+#				OpenSfM
+#				LASzip
+#				PDAL
+#				MvsTexturing
+#)
 
 # Dependencies of the SLAM module
 if(ODM_BUILD_SLAM)
