@@ -64,7 +64,7 @@ class ODM_Photo:
                 log.ODM_WARNING("Cannot read EXIF tags for %s: %s" % (_path_file, e.message))
 
         if self.camera_make and self.camera_model:
-            self.make_model = sensor_string(self.camera_make, self.camera_model)
+            self.make_model = sensor_string(self.camera_make.decode(), self.camera_model.decode())
 
         # needed to do that since sometimes metadata contains wrong data
         try:
