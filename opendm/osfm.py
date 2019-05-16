@@ -11,9 +11,9 @@ from opendm import context
 class OSFMContext:
     def __init__(self, opensfm_project_path):
         self.opensfm_project_path = opensfm_project_path
-    
+
     def run(self, command):
-        system.run('%s/bin/opensfm %s %s' %
+        system.run('opensfm %s %s' %
                     (context.opensfm_path, command, self.opensfm_project_path))
 
     def export_bundler(self, destination_bundle_file, rerun=False):
@@ -61,7 +61,7 @@ class OSFMContext:
 
         list_path = io.join_paths(self.opensfm_project_path, 'image_list.txt')
         if not io.file_exists(list_path) or rerun:
-            
+
             # create file list
             has_alt = True
             with open(list_path, 'w') as fout:
@@ -104,7 +104,7 @@ class OSFMContext:
             if gcp_path:
                 config.append("bundle_use_gcp: yes")
                 io.copy(gcp_path, self.path("gcp_list.txt"))
-            
+
             config = config + append_config
 
             # write config file
@@ -129,7 +129,7 @@ class OSFMContext:
     def feature_matching(self, rerun=False):
         features_dir = self.path("features")
         matches_dir = self.path("matches")
-        
+
         if not io.dir_exists(features_dir) or rerun:
             self.run('detect_features')
         else:
@@ -140,7 +140,7 @@ class OSFMContext:
         else:
             log.ODM_WARNING('Match features already done: %s exists' % matches_dir)
 
-        
+
     def path(self, *paths):
         return os.path.join(self.opensfm_project_path, *paths)
 
@@ -154,7 +154,7 @@ class OSFMContext:
         if io.file_exists(image_list_file):
             with open(image_list_file, 'r') as f:
                 content = f.read()
-            
+
             lines = []
             for line in map(str.strip, content.split('\n')):
                 if line and not line.startswith("/"):
@@ -167,7 +167,7 @@ class OSFMContext:
             log.ODM_DEBUG("Wrote %s with absolute paths" % file)
         else:
             log.ODM_WARNING("No %s found, cannot create %s" % (image_list_file, file))
-    
+
     def name(self):
         return os.path.basename(os.path.abspath(self.path("..")))
 
@@ -178,7 +178,7 @@ def get_submodel_argv(project_name = None, submodels_path = None, submodel_name 
     handles the <project name> value and --project-path detection / override.
     When all arguments are set to None, --project-path and project name are always removed.
 
-    :return the same as argv, but removing references to --split, 
+    :return the same as argv, but removing references to --split,
         setting/replacing --project-path and name
         removing --rerun-from, --rerun, --rerun-all, --sm-cluster
         adding --orthophoto-cutline
@@ -198,7 +198,7 @@ def get_submodel_argv(project_name = None, submodels_path = None, submodel_name 
 
     while i < len(argv):
         arg = argv[i]
-        
+
         # Last?
         if i == len(argv) - 1:
             # Project name?
@@ -225,11 +225,11 @@ def get_submodel_argv(project_name = None, submodels_path = None, submodel_name 
         else:
             result.append(arg)
             i += 1
-    
+
     if not found_args.get('--project-path') and submodels_path:
         result.append('--project-path')
         result.append(submodels_path)
-    
+
     if not found_args.get('project_name') and submodel_name:
         result.append(submodel_name)
 
@@ -271,7 +271,7 @@ def get_submodel_paths(submodels_path, *paths):
 
     for f in os.listdir(submodels_path):
         if f.startswith('submodel'):
-            p = os.path.join(submodels_path, f, *paths) 
+            p = os.path.join(submodels_path, f, *paths)
             if os.path.exists(p):
                 result.append(p)
             else:
@@ -297,7 +297,7 @@ def get_all_submodel_paths(submodels_path, *all_paths):
             all_found = True
 
             for ap in all_paths:
-                p = os.path.join(submodels_path, f, ap) 
+                p = os.path.join(submodels_path, f, ap)
                 if not os.path.exists(p):
                     log.ODM_WARNING("Missing %s from submodel %s" % (p, f))
                     all_found = False
