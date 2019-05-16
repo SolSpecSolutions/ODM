@@ -11,7 +11,7 @@ from opendm import system
 from pyodm import Node, exceptions
 from pyodm.utils import AtomicCounter
 from pyodm.types import TaskStatus
-from osfm import OSFMContext, get_submodel_args_dict, get_submodel_argv
+from opensfm import OSFMContext, get_submodel_args_dict, get_submodel_argv
 from pipes import quote
 
 try:
@@ -24,7 +24,7 @@ class LocalRemoteExecutor:
     A class for performing OpenSfM reconstructions and full ODM pipeline executions
     using a mix of local and remote processing. Tasks are executed locally one at a time
     and remotely until a node runs out of available slots for processing. This allows us
-    to use the processing power of the current machine as well as offloading tasks to a 
+    to use the processing power of the current machine as well as offloading tasks to a
     network node.
     """
     def __init__(self, nodeUrl):
@@ -64,7 +64,7 @@ class LocalRemoteExecutor:
             error = None
             semaphore = None
             local_processing = False
-        
+
         calculate_task_limit_lock = threading.Lock()
         finished_tasks = AtomicCounter(0)
 
@@ -80,7 +80,7 @@ class LocalRemoteExecutor:
             except exceptions.OdmError:
                 removed = False
             return removed
-        
+
         def cleanup_remote_tasks():
             if self.params['tasks']:
                 log.ODM_WARNING("LRE: Attempting to cleanup remote tasks")
@@ -99,9 +99,9 @@ class LocalRemoteExecutor:
 
             if error:
                 log.ODM_WARNING("LRE: %s failed with: %s" % (task, str(error)))
-                
+
                 # Special case in which the error is caused by a SIGTERM signal
-                # this means a local processing was terminated either by CTRL+C or 
+                # this means a local processing was terminated either by CTRL+C or
                 # by canceling the task.
                 if str(error) == "Child was terminated by signal 15":
                     system.exit_gracefully()
@@ -151,7 +151,7 @@ class LocalRemoteExecutor:
 
             if not local and not partial and nonloc.semaphore: nonloc.semaphore.release()
             if not partial: q.task_done()
-            
+
         def local_worker():
             while True:
                 # Block until a new queue item is available
@@ -186,7 +186,7 @@ class LocalRemoteExecutor:
                     q.task_done()
                     if nonloc.semaphore: nonloc.semaphore.release()
                     break
-                
+
                 # Special case in which we've just created a semaphore
                 if not had_semaphore and nonloc.semaphore:
                     log.ODM_INFO("LRE: Just found semaphore, sending %s back to the queue" % task)
@@ -208,7 +208,7 @@ class LocalRemoteExecutor:
                     task.process(False, handle_result)
                 except Exception as e:
                     handle_result(task, False, e)
-        
+
         # Create queue thread
         local_thread = threading.Thread(target=local_worker)
         if self.node_online:
@@ -228,7 +228,7 @@ class LocalRemoteExecutor:
         except KeyboardInterrupt:
             log.ODM_WARNING("LRE: CTRL+C")
             system.exit_gracefully()
-        
+
         # stop workers
         if nonloc.semaphore: nonloc.semaphore.release()
         q.put(None)
@@ -243,7 +243,7 @@ class LocalRemoteExecutor:
         # Wait for all remains threads
         for thrds in self.params['threads']:
             thrds.join()
-        
+
         system.remove_cleanup_callback(cleanup_remote_tasks)
         cleanup_remote_tasks()
 
@@ -253,7 +253,7 @@ class LocalRemoteExecutor:
                 raise exceptions.NodeConnectionError("A connection error happened. Check the connection to the processing node and try again.")
             else:
                 raise nonloc.error
-        
+
 
 class NodeTaskLimitReachedException(Exception):
     pass
@@ -274,7 +274,7 @@ class Task:
             done(self, local, error, partial)
 
         log.ODM_INFO("LRE: About to process %s %s" % (self, 'locally' if local else 'remotely'))
-        
+
         if local:
             self._process_local(handle_result) # Block until complete
         else:
@@ -318,7 +318,7 @@ class Task:
             done()
         except Exception as e:
             done(e)
-    
+
     def _process_remote(self, done):
         try:
             self.process_remote(done)
@@ -333,23 +333,23 @@ class Task:
         and returning the results specified in outputs. Yeah it's pretty cool!
         """
         seed_file = self.create_seed_payload(seed_files, touch_files=seed_touch_files)
-        
+
         # Find all images
         images = glob.glob(self.path("images/**"))
 
         # Add GCP (optional)
         if os.path.exists(self.path("gcp_list.txt")):
             images.append(self.path("gcp_list.txt"))
-        
+
         # Add seed file
         images.append(seed_file)
 
         def print_progress(percentage):
             if percentage % 10 == 0:
                 log.ODM_DEBUG("LRE: Upload of %s at [%s%%]" % (self, int(percentage)))
-        
+
         # Upload task
-        task = self.node.create_task(images, 
+        task = self.node.create_task(images,
                 get_submodel_args_dict(),
                 progress_callback=print_progress,
                 skip_post_processing=True,
@@ -370,7 +370,7 @@ class Task:
                     status_callback_calls = 0
 
                 def status_callback(info):
-                    # If a task switches from RUNNING to QUEUED, then we need to 
+                    # If a task switches from RUNNING to QUEUED, then we need to
                     # stop the process and re-add the task to the queue.
                     if info.status == TaskStatus.QUEUED:
                         log.ODM_WARNING("LRE: %s (%s) turned from RUNNING to QUEUED. Re-adding to back of the queue." % (self, task.uuid))
@@ -411,10 +411,10 @@ class Task:
         else:
             raise Exception("Could not send task to node, task status is %s" % str(info.status))
 
-    
+
     def process_local(self):
         raise NotImplementedError()
-    
+
     def process_remote(self, done):
         raise NotImplementedError()
 
@@ -430,13 +430,13 @@ class ReconstructionTask(Task):
         log.ODM_INFO("==================================")
         octx.feature_matching()
         octx.reconstruct()
-    
+
     def process_remote(self, done):
-        self.execute_remote_task(done, seed_files=["opensfm/exif", 
+        self.execute_remote_task(done, seed_files=["opensfm/exif",
                                             "opensfm/camera_models.json",
                                             "opensfm/reference_lla.json"],
                                  seed_touch_files=["opensfm/split_merge_stop_at_reconstruction.txt"],
-                                 outputs=["opensfm/matches", "opensfm/features", 
+                                 outputs=["opensfm/matches", "opensfm/features",
                                           "opensfm/reconstruction.json",
                                           "opensfm/tracks.csv"])
 
@@ -454,7 +454,7 @@ class ToolchainTask(Task):
         # Re-run the ODM toolchain on the submodel
         system.run(" ".join(map(quote, argv)), env_vars=os.environ.copy())
 
-    
+
     def process_remote(self, done):
         self.execute_remote_task(done, seed_files=["opensfm/camera_models.json",
                                             "opensfm/reference_lla.json",
@@ -465,5 +465,5 @@ class ToolchainTask(Task):
                                               "opensfm/exif/empty"],
                             outputs=["odm_orthophoto/odm_orthophoto.tif",
                                     "odm_orthophoto/cutline.gpkg",
-                                    "odm_dem", 
+                                    "odm_dem",
                                     "odm_georeferencing"])
