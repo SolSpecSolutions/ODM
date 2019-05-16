@@ -26,7 +26,7 @@ class Cropper:
 
         # Rename original file
         # path/to/odm_orthophoto.tif --> path/to/odm_orthophoto.original.tif
-        
+
         path, filename = os.path.split(geotiff_path)
         # path = path/to
         # filename = odm_orthophoto.tif
@@ -37,13 +37,13 @@ class Cropper:
 
         original_geotiff = os.path.join(path, "{}.original{}".format(basename, ext))
         os.rename(geotiff_path, original_geotiff)
-
+        options = ['-co {}={}'.format(k,v) for k, v in enumerate(gdal_options)]
         try:
             kwargs = {
                 'gpkg_path': gpkg_path,
                 'geotiffInput': original_geotiff,
                 'geotiffOutput': geotiff_path,
-                'options': ' '.join(map(lambda k: '-co {}={}'.format(k, gdal_options[k]), gdal_options)),
+                'options': ' '.join(options),
                 'max_memory': get_max_memory()
             }
 
@@ -59,7 +59,7 @@ class Cropper:
 
         except Exception as e:
             log.ODM_WARNING('Something went wrong while cropping: {}'.format(e.message))
-            
+
             # Revert rename
             os.rename(original_geotiff, geotiff_path)
 
@@ -85,7 +85,7 @@ class Cropper:
             # Collect all Geometry
             for feature in layer:
                 geomcol.AddGeometry(feature.GetGeometryRef())
-            
+
             ds = None
 
         # Calculate convex hull
@@ -146,7 +146,7 @@ class Cropper:
         boundary_file_path = self.path('boundary.json')
 
         run('pdal info --boundary --filters.hexbin.edge_length=1 --filters.hexbin.threshold=0 {0} > {1}'.format(decimated_pointcloud_path,  boundary_file_path))
-        
+
         pc_geojson_boundary_feature = None
 
         with open(boundary_file_path, 'r') as f:
@@ -167,7 +167,7 @@ class Cropper:
             }))
 
         # Create a convex hull around the boundary
-        # as to encompass the entire area (no holes)    
+        # as to encompass the entire area (no holes)
         driver = ogr.GetDriverByName('GeoJSON')
         ds = driver.Open(bounds_geojson_path, 0) # ready-only
         layer = ds.GetLayer()
@@ -218,7 +218,7 @@ class Cropper:
         """
         Compute a buffered polygon around the data extents (not just a bounding box)
         of the given point cloud.
-        
+
         @return filename to Geopackage containing the polygon
         """
         if not os.path.exists(pointcloud_path):
@@ -229,7 +229,7 @@ class Cropper:
 
         summary_file_path = os.path.join(self.storage_dir, '{}.summary.json'.format(self.files_prefix))
         run('pdal info --summary {0} > {1}'.format(pointcloud_path, summary_file_path))
-        
+
         pc_proj4 = None
         with open(summary_file_path, 'r') as f:
             json_f = json.loads(f.read())

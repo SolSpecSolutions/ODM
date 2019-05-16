@@ -12,7 +12,7 @@ from pyodm import Node, exceptions
 from pyodm.utils import AtomicCounter
 from pyodm.types import TaskStatus
 from opendm.osfm import OSFMContext, get_submodel_args_dict, get_submodel_argv
-from pipes import quote
+from shlex import quote
 
 try:
     import queue
@@ -452,7 +452,7 @@ class ToolchainTask(Task):
         argv = get_submodel_argv(project_name, submodels_path, submodel_name)
 
         # Re-run the ODM toolchain on the submodel
-        system.run(" ".join(map(quote, argv)), env_vars=os.environ.copy())
+        system.run(" ".join([quote(arg) for arg in argv]), env_vars=os.environ.copy())
 
 
     def process_remote(self, done):

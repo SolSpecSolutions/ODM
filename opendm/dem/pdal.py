@@ -37,8 +37,7 @@ from opendm import system
 from opendm import log
 
 from datetime import datetime
-from pipes import quote
-
+from shlex import quote
 
 """ JSON Functions """
 
@@ -74,7 +73,7 @@ def json_las_base(fout):
     json = json_base()
     json['pipeline'].insert(0, {
         'type': 'writers.las',
-        'filename': fout  
+        'filename': fout
     })
     return json
 
@@ -186,15 +185,15 @@ def merge_point_clouds(input_files, output_file, verbose=False):
     if len(input_files) == 0:
         log.ODM_WARNING("Cannot merge point clouds, no point clouds to merge.")
         return
-
+    files = input_files + [output_file]
     cmd = [
         'pdal',
         'merge',
-        ' '.join(map(quote, input_files + [output_file])),
+        ' '.join([quote(f) for f in files],
     ]
 
     if verbose:
         log.ODM_DEBUG(' '.join(cmd))
-    
+
     system.run(' '.join(cmd))
 

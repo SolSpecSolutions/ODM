@@ -8,13 +8,13 @@ class GCPFile:
         self.entries = []
         self.srs = ""
         self.read()
-    
+
     def read(self):
         if self.exists():
             with open(self.gcp_path, 'r') as f:
                 contents = f.read().strip()
-    
-            lines = map(str.strip, contents.split('\n'))
+
+            lines = [x.strip() for x in contents.split('\n')]
             if lines:
                 self.srs = lines[0] # SRS
 
@@ -22,7 +22,7 @@ class GCPFile:
                     if line != "" and line[0] != "#":
                         parts = line.split()
                         if len(parts) >= 6:
-                            self.entries.append(line)                          
+                            self.entries.append(line)
                         else:
                             log.ODM_WARNING("Malformed GCP line: %s" % line)
 
@@ -40,10 +40,10 @@ class GCPFile:
                 'filename': filename,
                 'extras': extras
             }
-    
+
     def entry_dict_to_s(self, entry):
         return "{x} {y} {z} {px} {py} {filename} {extras}".format(**entry).rstrip()
-    
+
     def exists(self):
         return self.gcp_path and os.path.exists(self.gcp_path)
 
@@ -56,15 +56,14 @@ class GCPFile:
         """
         if not self.exists() or not os.path.exists(images_dir):
             return None
-        
+
         if os.path.exists(gcp_file_output):
             os.remove(gcp_file_output)
-
-        files = map(os.path.basename, glob.glob(os.path.join(images_dir, "*")))
+        files = [os.path.basename(x) for x in glob.glob(os.path.join(images_dir, "*"))]
 
         output = [self.srs]
         files_found = 0
-        
+
         for entry in self.entries_dict():
             if entry['filename'] in files:
                 output.append(self.entry_dict_to_s(entry))

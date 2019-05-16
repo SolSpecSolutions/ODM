@@ -87,11 +87,9 @@ class ODM_Photo:
 
     def float_values(self, tag):
         return [v.num / v.den for v in tag.values]
-        # return map(lambda v: float(v.num) / float(v.den), tag.values)
 
     def int_values(self, tag):
         return [int(x) for x in tag.values]
-        #return map(int, tag.values)
 
 
 class ODM_Reconstruction(object):

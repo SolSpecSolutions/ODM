@@ -31,9 +31,9 @@ class ODMDEMStage(types.ODM_Stage):
             if not io.file_exists(pc_classify_marker) or self.rerun():
                 log.ODM_INFO("Classifying {} using Simple Morphological Filter".format(tree.odm_georeferencing_model_laz))
                 commands.classify(tree.odm_georeferencing_model_laz,
-                                  args.smrf_scalar, 
-                                  args.smrf_slope, 
-                                  args.smrf_threshold, 
+                                  args.smrf_scalar,
+                                  args.smrf_slope,
+                                  args.smrf_threshold,
                                   args.smrf_window,
                                   verbose=args.verbose
                                 )
@@ -57,7 +57,7 @@ class ODMDEMStage(types.ODM_Stage):
                 products = []
                 if args.dsm: products.append('dsm')
                 if args.dtm: products.append('dtm')
-                
+
                 resolution = gsd.cap_resolution(args.dem_resolution, tree.opensfm_reconstruction, gsd_error_estimate=-3, ignore_gsd=args.ignore_gsd)
                 radius_steps = [(resolution / 100.0) / 2.0]
                 for _ in range(args.dem_gapfill_steps - 1):
@@ -68,7 +68,7 @@ class ODMDEMStage(types.ODM_Stage):
                             tree.odm_georeferencing_model_laz,
                             product,
                             output_type='idw' if product == 'dtm' else 'max',
-                            radiuses=map(str, radius_steps),
+                            radiuses=[str(x) for x in radius_steps],
                             gapfill=args.dem_gapfill_steps > 0,
                             outdir=odm_dem_root,
                             resolution=resolution / 100.0,
@@ -87,13 +87,13 @@ class ODMDEMStage(types.ODM_Stage):
 
                     if args.dem_euclidean_map:
                         unfilled_dem_path = io.related_file_path(dem_geotiff_path, postfix=".unfilled")
-                        
+
                         if args.crop > 0:
                             # Crop unfilled DEM
                             Cropper.crop(bounds_file_path, unfilled_dem_path, utils.get_dem_vars(args))
 
-                        commands.compute_euclidean_map(unfilled_dem_path, 
-                                            io.related_file_path(dem_geotiff_path, postfix=".euclideand"), 
+                        commands.compute_euclidean_map(unfilled_dem_path,
+                                            io.related_file_path(dem_geotiff_path, postfix=".euclideand"),
                                             overwrite=True)
             else:
                 log.ODM_WARNING('Found existing outputs in: %s' % odm_dem_root)

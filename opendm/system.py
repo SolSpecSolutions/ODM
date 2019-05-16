@@ -15,7 +15,8 @@ def get_ccd_widths():
     """Return the CCD Width of the camera listed in the JSON defs file."""
     with open(context.ccd_widths_path) as f:
         sensor_data = json.loads(f.read())
-    return dict(zip(map(string.lower, sensor_data.keys()), sensor_data.values()))
+    formatted_keys = [string.lower(key) for key in sensor_data.keys()]
+    return dict(zip(formatted_keys, sensor_data.values()))
 
 running_subprocesses = []
 cleanup_callbacks = []
@@ -44,7 +45,7 @@ def exit_gracefully():
     for sp in running_subprocesses:
         log.ODM_WARNING("Sending TERM signal to PID %s..." % sp.pid)
         os.killpg(os.getpgid(sp.pid), signal.SIGTERM)
-    
+
     os._exit(1)
 
 def sighandler(signum, frame):
@@ -62,7 +63,7 @@ def run(cmd, env_paths=[context.superbuild_bin_path], env_vars={}):
     env = os.environ.copy()
     if len(env_paths) > 0:
         env["PATH"] = env["PATH"] + ":" + ":".join(env_paths)
-    
+
     for k in env_vars:
         env[k] = str(env_vars[k])
 

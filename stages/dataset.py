@@ -11,8 +11,9 @@ from shutil import copyfile
 
 def save_images_database(photos, database_file):
     with open(database_file, 'w') as f:
-        f.write(json.dumps(map(lambda p: p.__dict__, photos)))
-    
+        photo_dicts = [p.__dict__ for p in photos]
+        f.write(json.dumps(photo_dicts))
+
     log.ODM_INFO("Wrote images database: %s" % database_file)
 
 def load_images_database(database_file):
@@ -47,7 +48,7 @@ class ODMLoadDatasetStage(types.ODM_Stage):
             os.remove(tree.benchmarking)
             with open(tree.benchmarking, 'a') as b:
                 b.write('ODM Benchmarking file created %s\nNumber of Cores: %s\n\n' % (system.now(), context.num_cores))
-    
+
         # check if the extension is supported
         def supported_extension(file_name):
             (pathfn, ext) = os.path.splitext(file_name)
@@ -118,7 +119,7 @@ class ODMLoadDatasetStage(types.ODM_Stage):
         else:
             outputs['reconstruction'] = types.ODM_Reconstruction(photos, projstring=self.params.get('proj'))
 
-        # Save proj to file for future use (unless this 
+        # Save proj to file for future use (unless this
         # dataset is not georeferenced)
         if outputs['reconstruction'].projection:
             with open(io.join_paths(tree.odm_georeferencing, tree.odm_georeferencing_proj), 'w') as f:

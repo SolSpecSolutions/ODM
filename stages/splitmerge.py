@@ -13,7 +13,7 @@ from opensfm.large import metadataset
 from opendm.cropper import Cropper
 from opendm.concurrency import get_max_memory
 from opendm.remote import LocalRemoteExecutor
-from pipes import quote
+from shlex import shlex
 
 class ODMSplitStage(types.ODM_Stage):
     def process(self, args, outputs):
@@ -81,7 +81,7 @@ class ODMSplitStage(types.ODM_Stage):
                             io.copy(submodel_gcp_file, os.path.abspath(sp_octx.path("gcp_list.txt")))
                         else:
                             log.ODM_DEBUG("No GCP will be copied for %s, not enough images in the submodel are referenced by the GCP" % sp_octx.name())
-                        
+
                 # Reconstruct each submodel
                 log.ODM_INFO("Dataset has been split into %s submodels. Reconstructing each submodel..." % len(submodel_paths))
 
@@ -142,7 +142,8 @@ class ODMSplitStage(types.ODM_Stage):
                         argv = get_submodel_argv(args.name, tree.submodels_path, sp_octx.name())
 
                         # Re-run the ODM toolchain on the submodel
-                        system.run(" ".join(map(quote, argv)), env_vars=os.environ.copy())
+                        args = [repr(arg) for arg in shlex(argv)]
+                        system.run(" ".join(args), env_vars=os.environ.copy())
                 else:
                     lre.set_projects([os.path.abspath(os.path.join(p, "..")) for p in submodel_paths])
                     lre.run_toolchain()
@@ -150,7 +151,7 @@ class ODMSplitStage(types.ODM_Stage):
                 # Restore max_concurrency value
                 args.max_concurrency = orig_max_concurrency
 
-                with open(split_done_file, 'w') as fout: 
+                with open(split_done_file, 'w') as fout:
                     fout.write("Split done!\n")
             else:
                 log.ODM_WARNING('Found a split done file in: %s' % split_done_file)
@@ -172,9 +173,9 @@ class ODMMergeStage(types.ODM_Stage):
             if args.merge in ['all', 'pointcloud']:
                 if not io.file_exists(tree.odm_georeferencing_model_laz) or self.rerun():
                     all_point_clouds = get_submodel_paths(tree.submodels_path, "odm_georeferencing", "odm_georeferenced_model.laz")
-                    
+
                     try:
-                        # TODO: use entwine to create a tileset instead of 
+                        # TODO: use entwine to create a tileset instead of
                         # merging, which is memory inefficient and creates
                         # monster files.
                         pdal.merge_point_clouds(all_point_clouds, tree.odm_georeferencing_model_laz, args.verbose)
@@ -182,7 +183,7 @@ class ODMMergeStage(types.ODM_Stage):
                         log.ODM_WARNING("Could not merge point cloud: %s (skipping)" % str(e))
                 else:
                     log.ODM_WARNING("Found merged point cloud in %s" % tree.odm_georeferencing_model_laz)
-            
+
             # Merge crop bounds
             merged_bounds_file = os.path.join(tree.odm_georeferencing, 'odm_georeferenced_model.bounds.gpkg')
             if not io.file_exists(merged_bounds_file) or self.rerun():
@@ -209,15 +210,15 @@ class ODMMergeStage(types.ODM_Stage):
 
                     if len(all_orthos_and_cutlines) > 1:
                         log.ODM_DEBUG("Found %s submodels with valid orthophotos and cutlines" % len(all_orthos_and_cutlines))
-                        
+
                         # TODO: histogram matching via rasterio
                         # currently parts have different color tones
 
                         merged_geotiff = os.path.join(tree.odm_orthophoto, "odm_orthophoto.merged.tif")
-
+                        ortho_list = [repr(ortho) for ortho in shlex(all_orthos_and_cutlines)]
                         kwargs = {
                             'orthophoto_merged': merged_geotiff,
-                            'input_files': ' '.join(map(lambda i: quote(i[0]), all_orthos_and_cutlines)),
+                            'input_files': ' '.join(ortho_list),
                             'max_memory': get_max_memory(),
                             'threads': args.max_concurrency,
                         }
@@ -274,8 +275,8 @@ class ODMMergeStage(types.ODM_Stage):
 
                         # Overviews
                         if args.build_overviews:
-                            orthophoto.build_overviews(tree.odm_orthophoto_tif) 
-                        
+                            orthophoto.build_overviews(tree.odm_orthophoto_tif)
+
                     elif len(all_orthos_and_cutlines) == 1:
                         # Simply copy
                         log.ODM_WARNING("A single orthophoto/cutline pair was found between all submodels.")
@@ -294,7 +295,7 @@ class ODMMergeStage(types.ODM_Stage):
                 if not io.file_exists(dem_file) or self.rerun():
                     all_dems = get_submodel_paths(tree.submodels_path, "odm_dem", dem_filename)
                     log.ODM_INFO("Merging %ss" % human_name)
-                    
+
                     # Merge
                     dem_vars = utils.get_dem_vars(args)
                     euclidean_merge_dems(all_dems, dem_file, dem_vars)
@@ -321,4 +322,4 @@ class ODMMergeStage(types.ODM_Stage):
             log.ODM_INFO("Normal dataset, nothing to merge.")
 
 
-        
+
