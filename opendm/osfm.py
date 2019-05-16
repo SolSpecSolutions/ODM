@@ -14,7 +14,7 @@ class OSFMContext:
 
     def run(self, command):
         system.run('opensfm %s %s' %
-                    (context.opensfm_path, command, self.opensfm_project_path))
+                    (command, self.opensfm_project_path))
 
     def export_bundler(self, destination_bundle_file, rerun=False):
         if not io.file_exists(destination_bundle_file) or rerun:
