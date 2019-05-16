@@ -11,7 +11,7 @@ from opendm import system
 from pyodm import Node, exceptions
 from pyodm.utils import AtomicCounter
 from pyodm.types import TaskStatus
-from opensfm import OSFMContext, get_submodel_args_dict, get_submodel_argv
+from opendm.osfm import OSFMContext, get_submodel_args_dict, get_submodel_argv
 from pipes import quote
 
 try:
