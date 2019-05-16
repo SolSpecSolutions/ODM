@@ -189,7 +189,7 @@ def merge_point_clouds(input_files, output_file, verbose=False):
     cmd = [
         'pdal',
         'merge',
-        ' '.join([quote(f) for f in files],
+        ' '.join([quote(f) for f in files]),
     ]
 
     if verbose:
