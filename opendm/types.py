@@ -13,7 +13,7 @@ from opendm import system
 from opendm import context
 import logging
 
-class ODM_Photo():
+class ODM_Photo(dict):
     """   ODMPhoto - a class for ODMPhotos
     """
 
