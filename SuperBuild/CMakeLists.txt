@@ -74,7 +74,7 @@ endif()
 # ---------------------------------------------------------------------------------------------
 # Point Cloud Library (PCL)
 #
-find_package(PCL 1.8.0)
+find_package(PCL)
 if (NOT PCL_FOUND)
     message("Could not find PCL, building internal")
     set(ODM_PCL_Version 1.8.0)
