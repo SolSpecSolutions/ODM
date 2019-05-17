@@ -62,7 +62,7 @@ message(STATUS "SuperBuild binary files will be located to: ${SB_BINARY_DIR}")
 # ---------------------------------------------------------------------------------------------
 # Open Source Computer Vision (OpenCV)
 #
-find_package(OpenCV 2.4.11)
+find_package(OpenCV)
 if (NOT OpenCV_FOUND)
     message("Could not find OpenCV, building internal")
     set(ODM_OpenCV_Version 2.4.11)
