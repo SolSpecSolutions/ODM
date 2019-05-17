@@ -11,7 +11,8 @@ from shutil import copyfile
 
 def save_images_database(photos, database_file):
     with open(database_file, 'w') as f:
-        photo_dicts = [p for p in photos]
+        photo_dicts = [vars(p) for p in photos]
+        print(photo_dicts)
         f.write(json.dumps(photo_dicts))
 
     log.ODM_INFO("Wrote images database: %s" % database_file)

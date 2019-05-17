@@ -13,6 +13,7 @@ class OSFMContext:
         self.opensfm_project_path = opensfm_project_path
 
     def run(self, command):
+        log.ODM_WARNING("%s, %s" % (command, self.opensfm_project_path))
         system.run('opensfm %s %s' %
                     (command, self.opensfm_project_path))
 
@@ -123,6 +124,7 @@ class OSFMContext:
 
     def extract_metadata(self, rerun=False):
         metadata_dir = self.path("exif")
+        log.ODM_DEBUG(metadata_dir)
         if not io.dir_exists(metadata_dir) or rerun:
             self.run('extract_metadata')
 

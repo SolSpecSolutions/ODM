@@ -13,7 +13,7 @@ from opendm import system
 from opendm import context
 import logging
 
-class ODM_Photo(dict):
+class ODM_Photo(object):
     """   ODMPhoto - a class for ODMPhotos
     """
 
@@ -49,9 +49,9 @@ class ODM_Photo(dict):
 
             try:
                 if 'Image Make' in tags:
-                    self.camera_make = tags['Image Make'].values.encode('utf8')
+                    self.camera_make = tags['Image Make'].values
                 if 'Image Model' in tags:
-                    self.camera_model = tags['Image Model'].values.encode('utf8')
+                    self.camera_model = tags['Image Model'].values
                 if 'GPS GPSAltitude' in tags:
                     self.altitude = self.float_values(tags['GPS GPSAltitude'])[0]
                     if 'GPS GPSAltitudeRef' in tags and self.int_values(tags['GPS GPSAltitudeRef'])[0] > 0:
@@ -64,7 +64,7 @@ class ODM_Photo(dict):
                 log.ODM_WARNING("Cannot read EXIF tags for %s: %s" % (_path_file, e.message))
 
         if self.camera_make and self.camera_model:
-            self.make_model = sensor_string(self.camera_make.decode(), self.camera_model.decode())
+            self.make_model = sensor_string(self.camera_make, self.camera_model)
 
         # needed to do that since sometimes metadata contains wrong data
         try:
