@@ -133,8 +133,8 @@ if (NOT OPENGV_FOUND)
 endif()
 
 # OpenSFM
-find_program(opensfm)
-if (opensfm-NOTFOUND)
+find_program(OpenSFM opensfm)
+if (OpenSFM-NOTFOUND)
     SETUP_EXTERNAL_PROJECT_CUSTOM(OpenSFM)
 endif()
 
