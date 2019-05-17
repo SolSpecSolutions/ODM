@@ -15,7 +15,6 @@ set(CMAKE_MODULE_PATH ${SB_ROOT_DIR}/cmake)
 
 include(ExternalProject)
 include(ExternalProject-Setup)
-include(FindPythonModule)
 
 option(ODM_BUILD_SLAM "Build SLAM module" OFF)
 
@@ -134,8 +133,8 @@ if (NOT OPENGV_FOUND)
 endif()
 
 # OpenSFM
-find_python_module(OpenSFM)
-if (NOT PY_OpenSFM_FOUND)
+find_program(opensfm)
+if (opensfm-NOTFOUND)
     SETUP_EXTERNAL_PROJECT_CUSTOM(OpenSFM)
 endif()
 
