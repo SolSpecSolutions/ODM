@@ -62,37 +62,51 @@ message(STATUS "SuperBuild binary files will be located to: ${SB_BINARY_DIR}")
 # ---------------------------------------------------------------------------------------------
 # Open Source Computer Vision (OpenCV)
 #
-set(ODM_OpenCV_Version 2.4.11)
-option(ODM_BUILD_OpenCV "Force to build OpenCV library" OFF)
+find_package(OpenCV 2.4.11)
+if (NOT OpenCV_FOUND)
+    message("Could not find OpenCV, building internal")
+    set(ODM_OpenCV_Version 2.4.11)
+    option(ODM_BUILD_OpenCV "Force to build OpenCV library" OFF)
 
-SETUP_EXTERNAL_PROJECT(OpenCV ${ODM_OpenCV_Version} ${ODM_BUILD_OpenCV})
-
+    SETUP_EXTERNAL_PROJECT(OpenCV ${ODM_OpenCV_Version} ${ODM_BUILD_OpenCV})
+endif()
 
 # ---------------------------------------------------------------------------------------------
 # Point Cloud Library (PCL)
 #
-set(ODM_PCL_Version 1.8.0)
-option(ODM_BUILD_PCL "Force to build PCL library" OFF)
+find_package(PCL 1.8.0)
+if (NOT PCL_FOUND)
+    message("Could not find PCL, building internal")
+    set(ODM_PCL_Version 1.8.0)
+    option(ODM_BUILD_PCL "Force to build PCL library" OFF)
 
-SETUP_EXTERNAL_PROJECT(PCL ${ODM_PCL_Version} ${ODM_BUILD_PCL})
+    SETUP_EXTERNAL_PROJECT(PCL ${ODM_PCL_Version} ${ODM_BUILD_PCL})
+endif()
 
 
 # ---------------------------------------------------------------------------------------------
 # Google Flags library (GFlags)
 #
-set(ODM_GFlags_Version 2.1.2)
-option(ODM_BUILD_GFlags "Force to build GFlags library" OFF)
+find_package(GFlags 2.1.2)
+if (NOT GFlags_FOUND)
+    set(ODM_GFlags_Version 2.1.2)
+    option(ODM_BUILD_GFlags "Force to build GFlags library" OFF)
 
-SETUP_EXTERNAL_PROJECT(GFlags ${ODM_GFlags_Version} ${ODM_BUILD_GFlags})
-
+    SETUP_EXTERNAL_PROJECT(GFlags ${ODM_GFlags_Version} ${ODM_BUILD_GFlags})
+endif()
 
 # ---------------------------------------------------------------------------------------------
 # Ceres Solver
 #
-set(ODM_Ceres_Version 1.10.0)
-option(ODM_BUILD_Ceres "Force to build Ceres library" OFF)
+find_package(Ceres 1.10.0)
+if (NOT CERES_FOUND)
+    set(ODM_Ceres_Version 1.10.0)
+    option(ODM_BUILD_Ceres "Force to build Ceres library" OFF)
 
-SETUP_EXTERNAL_PROJECT(Ceres ${ODM_Ceres_Version} ${ODM_BUILD_Ceres})
+    SETUP_EXTERNAL_PROJECT(Ceres ${ODM_Ceres_Version} ${ODM_BUILD_Ceres})
+
+endif()
+
 
 
 # ---------------------------------------------------------------------------------------------
@@ -105,23 +119,53 @@ SETUP_EXTERNAL_PROJECT(Hexer 1.4 ON)
 # Open Structure from Motion (OpenSfM)
 #
 
-set(custom_libs OpenGV
-				OpenSfM
-				LASzip
-				PDAL
-				MvsTexturing
-)
+#set(custom_libs OpenGV
+#				OpenSfM
+#				LASzip
+#				PDAL
+#               MvsTexturing
+#)
+
+# OpenGV
+find_package(OpenGV)
+if (NOT OPENGV_FOUND)
+    SETUP_EXTERNAL_PROJECT_CUSTOM(OpenGV)
+endif()
+
+# OpenSFM
+find_package(OpenSFM)
+if (NOT OpenSFM_FOUND)
+    SETUP_EXTERNAL_PROJECT_CUSTOM(OpenSFM)
+endif()
+
+#LASzip
+find_package(LASzip)
+if (NOT LASzip_FOUND)
+    SETUP_EXTERNAL_PROJECT_CUSTOM(LASzip)
+endif()
+
+#PDAL
+find_package(PDAL)
+if (NOT PDAL_FOUND)
+    SETUP_EXTERNAL_PROJECT_CUSTOM(PDAL)
+endif()
+
+#MvsTexturing
+find_package(MvsTexturing)
+if (NOT MvsTexturing_FOUND)
+    SETUP_EXTERNAL_PROJECT_CUSTOM(MvsTexturing)
+endif()
+
 
 # Dependencies of the SLAM module
 if(ODM_BUILD_SLAM)
-	list(APPEND custom_libs
-				Pangolin
-				ORB_SLAM2)
+    set(custom_libs Pangolin
+                    ORB_SLAM2)
 endif()
 
-foreach(lib ${custom_libs})
-	SETUP_EXTERNAL_PROJECT_CUSTOM(${lib})
-endforeach()
+#foreach(lib ${custom_libs})
+#	SETUP_EXTERNAL_PROJECT_CUSTOM(${lib})
+#endforeach()
 
 ## Add mve Build
 
