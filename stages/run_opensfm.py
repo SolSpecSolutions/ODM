@@ -46,19 +46,20 @@ class ODMOpenSfMStage(types.ODM_Stage):
         else:
             image_scale = 1.0
 
+        # These will be used for texturing
+        undistorted_images_path = octx.path("undistorted")
+
+        if not io.dir_exists(undistorted_images_path) or self.rerun():
+            octx.run('undistort')
+        else:
+            log.ODM_WARNING("Found an undistorted directory in %s" % undistorted_images_path)
+
         if not io.file_exists(tree.opensfm_reconstruction_nvm) or self.rerun():
             octx.run('export_visualsfm')
         else:
             log.ODM_WARNING('Found a valid OpenSfM NVM reconstruction file in: %s' %
                             tree.opensfm_reconstruction_nvm)
 
-        # These will be used for texturing
-        undistorted_images_path = octx.path("undistorted")
-
-        if not io.dir_exists(undistorted_images_path) or self.rerun():
-            octx.run('undistort --image_format png --image_scale %s' % image_scale)
-        else:
-            log.ODM_WARNING("Found an undistorted directory in %s" % undistorted_images_path)
 
         # Skip dense reconstruction if necessary and export
         # sparse reconstruction instead
