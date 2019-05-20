@@ -47,7 +47,7 @@ class ODMOpenSfMStage(types.ODM_Stage):
             image_scale = 1.0
 
         if not io.file_exists(tree.opensfm_reconstruction_nvm) or self.rerun():
-            octx.run('export_visualsfm --image_extension png --scale_focal %s' % image_scale)
+            octx.run('export_visualsfm')
         else:
             log.ODM_WARNING('Found a valid OpenSfM NVM reconstruction file in: %s' %
                             tree.opensfm_reconstruction_nvm)
