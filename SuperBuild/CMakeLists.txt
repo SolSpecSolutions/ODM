@@ -171,9 +171,8 @@ endif()
 
 externalproject_add(mve
     GIT_REPOSITORY  https://github.com/simonfuhrmann/mve.git
-    GIT_TAG         55eb94f34f82694e0f25a7f235c25a06acc0bfae
+    #GIT_TAG         55eb94f34f82694e0f25a7f235c25a06acc0bfae
     # UPDATE_COMMAND  ""
-    CMAKE_ARGS      -DWITH_UTILITIES=OFF
     SOURCE_DIR      ${SB_SOURCE_DIR}/elibs/mve
     CONFIGURE_COMMAND ""
     BUILD_IN_SOURCE 1
@@ -187,7 +186,6 @@ externalproject_add(poissonrecon
     SOURCE_DIR        ${SB_SOURCE_DIR}/PoissonRecon
     UPDATE_COMMAND    ""
     CONFIGURE_COMMAND ""
-    CMAKE_ARGS        -DWITH_UTILITIES=OFF
     BUILD_IN_SOURCE 1
     BUILD_COMMAND     make poissonrecon
     INSTALL_COMMAND   ""
@@ -198,7 +196,6 @@ externalproject_add(dem2mesh
     GIT_TAG           master
     SOURCE_DIR        ${SB_SOURCE_DIR}/dem2mesh
     UPDATE_COMMAND    ""
-    CMAKE_ARGS        -DWITH_UTILITIES=OFF
     BUILD_IN_SOURCE 1
     BUILD_COMMAND     make
     INSTALL_COMMAND   ""
@@ -208,7 +205,6 @@ externalproject_add(dem2points
     GIT_REPOSITORY    https://github.com/OpenDroneMap/dem2points.git
     GIT_TAG           master
     SOURCE_DIR        ${SB_SOURCE_DIR}/dem2points
-    CMAKE_ARGS        -DWITH_UTILITIES=OFF
     UPDATE_COMMAND    ""
     BUILD_IN_SOURCE 1
     BUILD_COMMAND     make
