@@ -173,6 +173,7 @@ externalproject_add(mve
     GIT_REPOSITORY  https://github.com/simonfuhrmann/mve.git
     GIT_TAG         55eb94f34f82694e0f25a7f235c25a06acc0bfae
     UPDATE_COMMAND  ""
+    CMAKE_ARGS      -DWITH_UTILITIES=OFF
     SOURCE_DIR      ${SB_SOURCE_DIR}/elibs/mve
     CONFIGURE_COMMAND ""
     BUILD_IN_SOURCE 1

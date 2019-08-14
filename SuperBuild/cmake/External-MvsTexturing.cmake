@@ -8,7 +8,7 @@ ExternalProject_Add(${_proj_name}
   STAMP_DIR         ${_SB_BINARY_DIR}/stamp
   #--Download step--------------
   DOWNLOAD_DIR      ${SB_DOWNLOAD_DIR}/${_proj_name}
-  URL               https://github.com/npcasler/mvs-texturing/archive/Update_externalprojects_for_alpine.zip
+  URL               https://github.com/npcasler/mvs-texturing/archive/Rebase_to_nmoehrle.zip
   #--Update/Patch step----------
   UPDATE_COMMAND    ""
   #--Configure step-------------
