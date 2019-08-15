@@ -8,8 +8,8 @@ ExternalProject_Add(${_proj_name}
   STAMP_DIR         ${_SB_BINARY_DIR}/stamp
   #--Download step--------------
   DOWNLOAD_DIR      ${SB_DOWNLOAD_DIR}
-  URL               https://github.com/hobu/hexer/archive/2898b96b1105991e151696391b9111610276258f.tar.gz
-  URL_MD5           e8f2788332ad212cf78efa81a82e95dd
+  URL               https://github.com/hobu/hexer/archive/master.tar.gz
+  # URL_MD5           e8f2788332ad212cf78efa81a82e95dd
   #--Update/Patch step----------
   UPDATE_COMMAND    ""
   #--Configure step-------------
