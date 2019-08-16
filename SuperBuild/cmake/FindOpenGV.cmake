@@ -19,6 +19,7 @@ FIND_PATH(OPENGV_INCLUDE_DIR opengv/types.hpp
   HINTS
   $ENV{OPENGV_DIR}/include
   ${OPENGV_DIR}/include
+  /usr/include
   PATH_SUFFIXES
   openGV
 )
@@ -46,6 +47,7 @@ FIND_LIBRARY(OPENGV_LIBRARY NAMES opengv
   HINTS
   $ENV{OPENGV_DIR}/lib
   ${OPENGV_DIR}/lib
+  /usr/lib
   PATH_SUFFIXES
   openGV
 )
