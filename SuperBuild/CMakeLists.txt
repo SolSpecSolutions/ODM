@@ -74,6 +74,7 @@ endif()
 # ---------------------------------------------------------------------------------------------
 # Point Cloud Library (PCL)
 #
+
 find_package(PCL)
 if (NOT PCL_FOUND)
     message("Could not find PCL, building internal")
@@ -128,7 +129,7 @@ endif()
 
 # OpenGV
 find_package(OpenGV)
-if (NOT OPENGV_FOUND)
+if (NOT OpenGV_FOUND)
     SETUP_EXTERNAL_PROJECT_CUSTOM(OpenGV)
 endif()
 
