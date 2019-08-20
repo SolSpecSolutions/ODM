@@ -129,7 +129,7 @@ endif()
 
 # OpenGV
 find_package(OpenGV)
-if (NOT OpenGV_FOUND)
+if (NOT OPENGV_FOUND)
     SETUP_EXTERNAL_PROJECT_CUSTOM(OpenGV)
 endif()
 
