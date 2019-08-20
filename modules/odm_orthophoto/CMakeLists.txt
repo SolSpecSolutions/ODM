@@ -2,14 +2,14 @@ project(odm_orthophoto)
 cmake_minimum_required(VERSION 2.8)
 
 # Set pcl dir to the input spedified with option -DPCL_DIR="path"
-set(PCL_DIR "PCL_DIR-NOTFOUND" CACHE "PCL_DIR" "Path to the pcl installation directory")
-set(OPENCV_DIR "OPENCV_DIR-NOTFOUND" CACHE "OPENCV_DIR" "Path to the OPENCV installation directory")
+#set(PCL_DIR "PCL_DIR-NOTFOUND" CACHE "PCL_DIR" "Path to the pcl installation directory")
+#set(OPENCV_DIR "OPENCV_DIR-NOTFOUND" CACHE "OPENCV_DIR" "Path to the OPENCV installation directory")
 
 # Add compiler options.
 add_definitions(-Wall -Wextra)
 
 # Find pcl at the location specified by PCL_DIR
-find_package(VTK 6.0 REQUIRED)
+find_package(VTK 7.1 REQUIRED)
 find_package(PCL 1.8 HINTS "${PCL_DIR}/share/pcl-1.8" REQUIRED)
 
 # Find OpenCV at the default location
