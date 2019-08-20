@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 2.8)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR})
 
 set (CMAKE_CXX_STANDARD 11)
-find_package(VTK REQUIRED)
+find_package(VTK 7.1 REQUIRED)
 include(${VTK_USE_FILE})
 
 # Add compiler options.
@@ -16,6 +16,6 @@ aux_source_directory("./src" SRC_LIST)
 # Add exectuteable
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${VTK_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PUBLIC ${VTK_INCLUDE_DIRS})
 
 target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
