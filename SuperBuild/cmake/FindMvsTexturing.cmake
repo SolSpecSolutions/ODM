@@ -45,15 +45,15 @@ INCLUDE(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(tex DEFAULT_MSG
     MvsTexturing_LIBRARY MvsTexturing_INCLUDE_DIR)
 
-IF(MVSTEXTURING_FOUND)
+IF(TEX_FOUND)
     MESSAGE("MvsTexturing Found!")
     SET(MvsTexturing_LIBRARIES ${MvsTexturing_LIBRARY})
     SET(MvsTexturing_INCLUDE_DIRS ${MvsTexturing_INCLUDE_DIR})
-ELSE(MVSTEXTURING_FOUND)
+ELSE(TEX_FOUND)
     MESSAGE("MvsTexturing Not Found")
     MESSAGE("${MvsTexturing_LIBRARY}")
     MESSAGE("${MvsTexturing_INCLUDE_DIR}")
-ENDIF(MVSTEXTURING_FOUND)
+ENDIF(TEX_FOUND)
 
 MARK_AS_ADVANCED(
     MvsTexturing_INCLUDE_DIR
