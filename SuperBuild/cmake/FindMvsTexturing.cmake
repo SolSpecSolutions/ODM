@@ -23,11 +23,11 @@ SET(_mvstexturing_SEARCH_DIRS
 
 FIND_PATH(MvsTexturing_INCLUDE_DIR
     NAMES
-        tex/texturing.h
+        "texturing.h"
     HINTS
         ${_mvstexturing_SEARCH_DIRS}
     PATH_SUFFIXES
-        include
+        "include/tex"
 )
 
 FIND_LIBRARY(MvsTexturing_LIBRARY
