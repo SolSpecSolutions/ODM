@@ -49,6 +49,10 @@ IF(MVSTEXTURING_FOUND)
     MESSAGE("MvsTexturing Found!")
     SET(MvsTexturing_LIBRARIES ${MvsTexturing_LIBRARY})
     SET(MvsTexturing_INCLUDE_DIRS ${MvsTexturing_INCLUDE_DIR})
+ELSE(MVSTEXTURING_FOUND)
+    MESSAGE("MvsTexturing Not Found")
+    MESSAGE("${MvsTexturing_LIBRARY}")
+    MESSAGE("${MvsTexturing_INCLUDE_DIR}")
 ENDIF(MVSTEXTURING_FOUND)
 
 MARK_AS_ADVANCED(
