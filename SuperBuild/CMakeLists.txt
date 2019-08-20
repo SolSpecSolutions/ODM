@@ -154,6 +154,7 @@ endif()
 #MvsTexturing
 find_package(MvsTexturing)
 if (NOT MvsTexturing_FOUND)
+    MESSAGE("Could not find MvsTexturing")
     SETUP_EXTERNAL_PROJECT_CUSTOM(MvsTexturing)
 endif()
 
