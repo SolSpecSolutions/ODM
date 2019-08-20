@@ -12,8 +12,10 @@ add_definitions(-Wall -Wextra)
 
 # Add source directory
 aux_source_directory("./src" SRC_LIST)
-	
+
 # Add exectuteable
 add_executable(${PROJECT_NAME} ${SRC_LIST})
-	
+
+target_include_directories(${PROJECT_NAME} ${VTK_INCLUDE_DIRS})
+
 target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})
