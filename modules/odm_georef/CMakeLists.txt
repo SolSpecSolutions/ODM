@@ -1,10 +1,6 @@
 project(odm_georef)
 cmake_minimum_required(VERSION 2.8)
 
-# Set pcl dir to the input spedified with option -DPCL_DIR="path"
-# set(PROJ4_INCLUDE_DIR "/usr/include/" CACHE "PROJ4_INCLUDE_DIR" "Path to the proj4 inlcude directory")
-# find_library(PROJ4_LIBRARY "libproj.so" HINTS "/usr/lib" "usr/local/lib" "/usr/lib/x86_64-linux-gnu")
-#set(PROJ4_LIBRARY "/usr/lib/x86_64-linux-gnu/libproj.so" CACHE "PROJ4_LIBRARY" "Path to the proj4 library directory")
 find_package(PROJ4 REQUIRED)
 
 # Add compiler options.
@@ -13,7 +9,7 @@ add_definitions(-Wall -Wextra -Wconversion -pedantic -std=c++11)
 # Find pcl at the location specified by PCL_DIR
 find_package(VTK 7.1 REQUIRED)
 find_package(PCL 1.8 HINTS "${PCL_DIR}/share/pcl-1.8")
-
+find_package(Boost 1.69)
 # Find OpenCV at the default location
 find_package(OpenCV HINTS "${OPENCV_DIR}" REQUIRED)
 
@@ -40,4 +36,4 @@ aux_source_directory("./src" SRC_LIST)
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 
 # Link
-target_link_libraries(${PROJECT_NAME} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${PCL_SURFACE_LIBRARIES} ${PROJ4_LIBRARY} ${OpenCV_LIBS}  ${PDAL_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${BOOST_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${PCL_SURFACE_LIBRARIES} ${PROJ4_LIBRARY} ${OpenCV_LIBS} ${PDAL_LIBRARIES})
