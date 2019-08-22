@@ -178,7 +178,7 @@ externalproject_add(mve
     SOURCE_DIR      ${SB_SOURCE_DIR}/elibs/mve
     CONFIGURE_COMMAND ""
     BUILD_IN_SOURCE 1
-    BUILD_COMMAND   make -C libs/mve && make -C libs/util
+    BUILD_COMMAND   make -C libs/mve && make -C libs/util && make -C apps
     INSTALL_COMMAND ""
 )
 

@@ -266,7 +266,7 @@ RUN cd /tmp \
         -DBUILD_TESTS=OFF \
         -DCMAKE_BUILD_TYPE=Release \
         -DBUILD_PYTHON=ON \
-        -DPYBIND11_PYTHON_VERSION=3.6 \
+        -DPYBIND11_PYTHON_VERSION=2.7 \
         -DHAS_FLTO=OFF \
         -DPYTHON_INSTALL_DIR=$(python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") \
         .. \
@@ -281,7 +281,7 @@ RUN cd /tmp \
     && python setup.py build \
     && python setup.py install \
     && ls bin \
-    && ln -s bin/export_bundler /usr/bin/export_bundler \
+    && cp bin/export_bundler /usr/bin/export_bundler \
     && rm -rf /tmp/OpenSFM
 
 # Link VTK to proj4
@@ -367,8 +367,9 @@ RUN rm -rf \
     /code/SuperBuild/src/pcl \
     /code/SuperBuild/src/pdal
 
-RUN pip install pyodm
-RUN echo $(ls $(python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"))
-RUN echo $(ls $(python3 -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"))
+ENV PYTHONPATH "${PYTHONPATH}:/usr/local/lib/python2.7/site-packages"
+RUN pip install gdal
+ENV PATH "${PATH}:/code/SuperBuild/src/elibs/mve/apps"
+RUN echo $(ls -1 /usr/local/bin)
 ENTRYPOINT ["python", "/code/run.py", "code"]
 
