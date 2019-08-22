@@ -3,12 +3,8 @@ MAINTAINER Nathan Casler <ncasler@solspec.io>
 
 ENV OPENCV_VERSION=4.0.1 \
     CERES_VERSION=1.14.0 \
-    GLOG_VERSION=0.4.0 \
-    GFLAGS_VERSION=2.2.2 \
-    SQLITE_VERSION=3280000 \
     PDAL_VERSION=1.9.1 \
     PCL_VERSION=1.9.1
-
 
 #Following commands are pulled from PDAL/alpinebase
 
@@ -34,6 +30,8 @@ RUN \
         libxml2-dev \
         libexecinfo-dev@edgemain \
         libunwind@edgemain \
+        flann-dev@edgetesting \
+        gtest-dev@edgemain \
         libtbb@edgetesting \
         sqlite-dev \
         libcrypto1.1@edgemain \
@@ -55,8 +53,10 @@ RUN \
         flann@edgetesting \
         freetype-dev \
         gettext \
+        gflags-dev@edgecommunity
         gfortran \
         glib-dev \
+        glog-dev@edgetesting \
         lcms2-dev \
         libavc1394-dev \
         libffi-dev \
@@ -92,9 +92,8 @@ RUN \
         zlib-dev \
     && rm -rf /var/cache/* \
     && rm -rf /root/.cache/*
-    # 
-    # Install vtk
-    #
+
+# Python Libraries
 RUN  \
     pip install \
     setuptools \
@@ -116,6 +115,7 @@ RUN  \
     python-dateutil==2.6.0 \
     rasterio
 
+# Install vtk
 RUN \
     wget -nv -O- http://www.vtk.org/files/release/7.1/VTK-7.1.0.tar.gz | \
     tar xz && \
@@ -169,7 +169,7 @@ RUN \
     && cd / \
     && rm -rf cpd
 
-# BEGIN PDAL BUILD
+# PDAL
 RUN    \
     git clone https://github.com/PDAL/PDAL.git --branch 1.9-maintenance --single-branch pdal \
     && cd pdal \
@@ -196,15 +196,7 @@ RUN    \
     && rm -rf pdal \
     && rm -rf /usr/share/hdf5_examples
 
-# BEGIN ODM BUILD
-
-
-RUN mkdir -p /tmp/gflags \
-    && curl -sfL https://github.com/gflags/gflags/archive/v${GFLAGS_VERSION}.tar.gz | tar zxf - -C /tmp/gflags --strip-components=1 \
-    && cd /tmp/gflags && mkdir build && cd build \
-    && cmake -DCMAKE_BUILD_TYPE=Release .. \
-    && make install \
-    && rm -rf /tmp/gflags
+# OpenCV
 
 RUN mkdir -p /tmp/opencv \
     && curl -sfL https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.tar.gz | tar zxf - -C /tmp/opencv --strip-components=1 \
@@ -233,16 +225,6 @@ RUN mkdir -p /tmp/opencv \
              .. \
             && make -j $(nproc) install \
             && rm -rf /tmp/opencv
-
-# RUN mkdir -p /tmp/glog \
-#     && curl -sfL https://github.com/google/glog/archive/v${GLOG_VERSION}.tar.gz | tar zxf - -C /tmp/glog --strip-components=1 \
-#     && cd /tmp/glog && mkdir build && cd build \
-#     && cmake -DCMAKE_BUILD_TYPE=Release .. \
-#     && make install \
-#     && rm -rf /tmp/glog
-RUN apk add --no-cache \
-        glog-dev@edgetesting \
-        gflags-dev@edgecommunity
 
 # CERES
 RUN mkdir -p /tmp/ceres \
@@ -284,13 +266,10 @@ RUN cd /tmp \
     && cp bin/export_bundler /usr/bin/export_bundler \
     && rm -rf /tmp/OpenSFM
 
-# Link VTK to proj4
-#RUN ln -s /usr/lib/x86_64-linux_gnu/libvtkCommonCore-6.3.so /usr/lib/libvtkproj4.so
 
 # PCL
 RUN \
-    apk add --no-cache flann-dev@edgetesting gtest-dev@edgemain \
-    && mkdir /tmp/pcl \
+    mkdir /tmp/pcl \
     && curl -sfL https://github.com/PointCloudLibrary/pcl/archive/pcl-1.9.0.tar.gz | tar zxf - -C /tmp/pcl --strip-components=1 \
     && cd /tmp/pcl && mkdir build && cd build \
     && cmake .. \
@@ -326,10 +305,7 @@ RUN \
 
 # MvsTexturing
 RUN \
-    find / -name "vtkPLYReader.h" \
-    && ls /usr/local/lib \
-    && echo "placeholder" \
-    && cd /tmp \
+    cd /tmp \
     && git clone --branch 'Rebase_to_nmoehrle' --single-branch https://github.com/npcasler/mvs-texturing \
     && cd /tmp/mvs-texturing \
     && mkdir build \
@@ -370,6 +346,6 @@ RUN rm -rf \
 ENV PYTHONPATH "${PYTHONPATH}:/usr/local/lib/python2.7/site-packages"
 RUN pip install gdal
 ENV PATH "${PATH}:/code/SuperBuild/src/elibs/mve/apps"
-RUN echo $(ls -1 /usr/local/bin)
+RUN echo $(ls -1 /code/SuperBuild/src/elibs/mve/apps)
 ENTRYPOINT ["python", "/code/run.py", "code"]
 
