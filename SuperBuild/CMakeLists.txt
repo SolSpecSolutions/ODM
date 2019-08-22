@@ -172,7 +172,8 @@ endif()
 ## Add mve Build
 
 externalproject_add(mve
-    GIT_REPOSITORY  https://github.com/simonfuhrmann/mve.git
+    GIT_REPOSITORY  https://github.com/npcasler/mve.git
+    GIT_TAG         origin/Alpine_compatibility
     #GIT_TAG         55eb94f34f82694e0f25a7f235c25a06acc0bfae
     # UPDATE_COMMAND  ""
     SOURCE_DIR      ${SB_SOURCE_DIR}/elibs/mve
