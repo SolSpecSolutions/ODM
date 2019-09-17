@@ -43,7 +43,7 @@ RUN \
         laz-perf-dev@edgetesting \
         hdf5-dev@edgetesting \
         build-base \
-        boost-dev \
+        boost-dev@edgemain \
         ca-certificates \
         coreutils \
         curl \
@@ -53,7 +53,7 @@ RUN \
         flann@edgetesting \
         freetype-dev \
         gettext \
-        gflags-dev@edgecommunity
+        gflags-dev@edgecommunity \
         gfortran \
         glib-dev \
         glog-dev@edgetesting \
@@ -314,10 +314,10 @@ RUN \
     && make -j $(nproc) install \
     && rm -rf /tmp/mvs-texturing
 
+COPY . /code
 # ODM
 RUN \
-    git clone --branch 'Add_conditional_check_for_superbuild' --single-branch https://github.com/npcasler/ODM.git /code \
-    && cd /code \
+    cd /code \
     && cd SuperBuild \
     && mkdir build \
     && cd build \
@@ -332,6 +332,7 @@ RUN \
     && cmake .. \
     && make -j $(nproc)
 
+# git clone --branch 'Add_conditional_check_for_superbuild' --single-branch https://github.com/npcasler/ODM.git /code \
 
 RUN rm -rf \
     /code/SuperBuild/build/opencv \
