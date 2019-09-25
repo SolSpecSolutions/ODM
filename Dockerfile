@@ -1,6 +1,8 @@
 FROM osgeo/gdal:alpine-normal-latest
 MAINTAINER Nathan Casler <ncasler@solspec.io>
 
+WORKDIR /code
+
 ENV OPENCV_VERSION=4.0.1 \
     CERES_VERSION=1.14.0 \
     PDAL_VERSION=1.9.1 \
@@ -100,6 +102,7 @@ RUN  \
     wheel \
     appsettings \
     exifread==2.1.2 \
+    gdal \
     gpxpy==1.1.2 \
     loky \
     psutil \
@@ -147,27 +150,27 @@ RUN \
     #
     # These use PDAL's vendor/eigen
     #
-RUN \
-    git clone https://github.com/gadomski/fgt.git \
-    && cd fgt \
-    && mkdir build \
-    && cd build \
-    && cmake .. \
-        -G Ninja \
-        -DCMAKE_BUILD_TYPE=Release \
-    && ninja install \
-    && cd / \
-    && rm -rf fgt \
-    && git clone https://github.com/gadomski/cpd.git \
-    && cd cpd \
-    && mkdir build \
-    && cd build \
-    && cmake .. \
-        -G Ninja \
-        -DCMAKE_BUILD_TYPE=Release \
-    && ninja install \
-    && cd / \
-    && rm -rf cpd
+#RUN \
+#    git clone https://github.com/gadomski/fgt.git \
+#    && cd fgt \
+#    && mkdir build \
+#    && cd build \
+#    && cmake .. \
+#        -G Ninja \
+#        -DCMAKE_BUILD_TYPE=Release \
+#    && ninja install \
+#    && cd / \
+#    && rm -rf fgt \
+#    && git clone https://github.com/gadomski/cpd.git \
+#    && cd cpd \
+#    && mkdir build \
+#    && cd build \
+#    && cmake .. \
+#        -G Ninja \
+#        -DCMAKE_BUILD_TYPE=Release \
+#    && ninja install \
+#    && cd / \
+#    && rm -rf cpd
 
 # PDAL
 RUN    \
@@ -179,15 +182,14 @@ RUN    \
         -G Ninja \
         -DCMAKE_BUILD_TYPE=Release \
         -DBUILD_PLUGIN_PYTHON=ON \
-        -DBUILD_PLUGIN_NITF=ON \
-        -DBUILD_PLUGIN_GREYHOUND=ON \
-        -DBUILD_PLUGIN_CPD=ON \
-        -DBUILD_PLUGIN_ICEBRIDGE=ON \
-        -DBUILD_PLUGIN_PGPOINTCLOUD=ON \
-        -DBUILD_PLUGIN_SQLITE=ON \
-        -DBUILD_PLUGIN_I3S=ON \
+        -DBUILD_PLUGIN_NITF=OFF \
+        -DBUILD_PLUGIN_GREYHOUND=OFF \
+        -DBUILD_PLUGIN_CPD=OFF \
+        -DBUILD_PLUGIN_ICEBRIDGE=OFF \
+        -DBUILD_PLUGIN_PGPOINTCLOUD=OFF \
+        -DBUILD_PLUGIN_SQLITE=OFF \
+        -DBUILD_PLUGIN_I3S=OFF \
         -DWITH_LASZIP=ON \
-        -DWITH_LAZPERF=ON \
         -DWITH_LAZPERF=ON \
         -DCMAKE_INSTALL_PREFIX=/usr/local \
         -DCMAKE_INSTALL_LIBDIR=lib \
@@ -219,9 +221,9 @@ RUN mkdir -p /tmp/opencv \
              -DPYTHON_EXECUTABLE=$(which python) \
              -DPYTHON_INCLUDE_DIR=$(python -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") \
              -DPYTHON_PACKAGES_PATH=$(python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") \
-             # -DPYTHON3_EXECUTABLE=$(which python3) \
-             # -DPYTHON3_INCLUDE_DIR=$(python3 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") \
-             # -DPYTHON3_PACKAGES_PATH=$(python3 -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") \
+             -DPYTHON3_EXECUTABLE=$(which python3) \
+             -DPYTHON3_INCLUDE_DIR=$(python3 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") \
+             -DPYTHON3_PACKAGES_PATH=$(python3 -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") \
              .. \
             && make -j $(nproc) install \
             && rm -rf /tmp/opencv
@@ -316,8 +318,8 @@ RUN \
 
 COPY . /code
 # ODM
-RUN \
-    cd /code \
+RUN chmod -R 777 /code \
+    && cd /code \
     && cd SuperBuild \
     && mkdir build \
     && cd build \
@@ -332,8 +334,6 @@ RUN \
     && cmake .. \
     && make -j $(nproc)
 
-# git clone --branch 'Add_conditional_check_for_superbuild' --single-branch https://github.com/npcasler/ODM.git /code \
-
 RUN rm -rf \
     /code/SuperBuild/build/opencv \
     /code/SuperBuild/download \
@@ -345,8 +345,6 @@ RUN rm -rf \
     /code/SuperBuild/src/pdal
 
 ENV PYTHONPATH "${PYTHONPATH}:/usr/local/lib/python2.7/site-packages"
-RUN pip install gdal
 ENV PATH "${PATH}:/code/SuperBuild/src/elibs/mve/apps"
-RUN echo $(ls -1 /code/SuperBuild/src/elibs/mve/apps)
-ENTRYPOINT ["python", "/code/run.py", "code"]
 
+ENTRYPOINT ["python", "run.py", "code"]
